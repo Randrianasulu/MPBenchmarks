@@ -8,3 +8,5 @@ OpenCL support
 
 For compiling just issue make in 
 BealtoOpenCL and then in MPBenchmarks
+
+For licensing see files LICENSE.txt in both dirs
