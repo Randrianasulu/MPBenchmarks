@@ -141,8 +141,6 @@ private:
 
   // Devices associated with this context
   std::vector<cl_device_id> mDevices;
-  
-  
 
 }; // class Context
 

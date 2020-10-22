@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include "CLProgram.h"
+#include "CLContext.h"
+
+int DEV1 = 0; // was 0
 
 using namespace cl;
 
@@ -69,10 +72,10 @@ bool Program::getBinary(std::vector<unsigned char> & binary)
   REPORT_OPENCL_STATUS(status);
   if (status != CL_SUCCESS) return false;
   // Copy result for first device
-  if (binarySize[0]>0)
+  if (binarySize[DEV1]>0)
   {
     binary.resize(binarySize[0],0);
-    memcpy(&(binary[0]),buf[0],binarySize[0]);
+    memcpy(&(binary[DEV1]),buf[0],binarySize[DEV1]);
   }
   // Free buffers
   for (cl_uint i=0;i<nDevices;i++)

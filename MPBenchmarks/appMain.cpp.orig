@@ -12,105 +12,12 @@
 #include <QtGui/QClipboard>
 #endif
 
-#include <iostream>
-#include <stdio.h>
-#include <iomanip>
-#include <string.h>
-#include <sstream>
-
-
-bool isGPU, isCPU, infoOnly, forcePlatform, forceDevice;
-int  specifiedPlatform, specifiedDevice;
-
 struct TestResult
 {
   std::string title;
   std::vector<int> mbps; // MB/s by logSize
   void update(int ls,int x) { if (x > mbps[ls]) mbps[ls] = x; } // keep max
 };
-
-static const char *helpStr =
-    "\n benchmark options [OPTIONS]"
-    "\n"
-    "\n OPTIONS:"
-    "\n  -p, --platform num          choose platform (num starts with 0)"
-    "\n  -d, --device num            choose device   (num starts with 0)"
-    "\n --cpu - run only CPU tests"
-    "\n --gpu - run only GPU tests"
-    "\n  --all-tests                 run all above tests [default]"
-    "\n --info                       only show info about device"
-    "\n  -h, --help                  display help message"
-    "\n";
-int parseArgs(int argc, char **argv);
-
-int parseArgs(int argc, char **argv)
-{
-  bool forcedTests = false;
-  
-
-  for (int i = 1; i < argc; i++)
-  {
-    if ((strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--help") == 0))
-    {
-      printf(helpStr);
-      //log->print(NEWLINE);
-      exit(0);
-    }
-    else if ((strcmp(argv[i], "-v") == 0) || (strcmp(argv[i], "--version") == 0))
-    {
-      //stringstream versionStr;
-      //string versionStr << "Benchmark version: " << "1.01";
-
-      //log->print(versionStr.str().c_str());
-      printf("Version 1.01\n");
-      exit(0);
-    }
-    else if ((strcmp(argv[i], "-p") == 0) || (strcmp(argv[i], "--platform") == 0))
-    {
-      if ((i + 1) < argc)
-      {
-        forcePlatform = true;
-        specifiedPlatform = strtoul(argv[i + 1], NULL, 0);
-        i++;
-      }
-    }
-    else if ((strcmp(argv[i], "-d") == 0) || (strcmp(argv[i], "--device") == 0))
-    {
-      if ((i + 1) < argc)
-      {
-        forceDevice = true;
-        specifiedDevice = strtoul(argv[i + 1], NULL, 0);
-        i++;
-      }
-    }
-    else if ((strcmp(argv[i], "-i") == 0) || (strcmp(argv[i], "--info") == 0))
-    {
-        infoOnly = true;
-    }
-    else if (strcmp(argv[i], "--cpu") == 0)
-      {
-        isCPU = true;
-      }
-      else if (strcmp(argv[i], "--gpu") == 0)
-      {
-        isGPU = true;
-      }
-    else if (strcmp(argv[i], "--all-tests") == 0)
-    {
-      isCPU = isGPU = true;
-    }
-    else
-    {
-      printf(helpStr);
-      //log->print(NEWLINE);
-      exit(-1);
-    }
-  }
-
-  // Allocate logger after parsing
-  //log = new logger(enableXml, xmlFileName);
-  return 0;
-}
 
 void print(FILE * f,const TestResult & r,int minLogSize,int maxLogSize)
 {
@@ -154,32 +61,22 @@ int main(int argc,char ** argv)
   Logger * log = new Logger();
 #endif
 
-parseArgs(argc, argv);
-
-
 #if 1
   // Display device info
   cl::Context * c = cl::Context::create();
   if (c != 0)
     {
-     // c->getAllDeviceInfo(0,s)
       std::string s;
-      if (c->getAllDeviceInfo(specifiedDevice,s)) log->append(s.c_str());
+      if (c->getAllDeviceInfo(0,s)) log->append(s.c_str());
       delete c;
       c = 0;
     }
-    
-    if (infoOnly)
-        exit(0);
-
 #endif
 
   int minLogSize = 10;
   int maxLogSize = 29;
   std::vector<TestResult> allTests;
 
-
-if  (isCPU) {
   // Run all CPU tests
   for (int task=0;task<100;task++)
     {
@@ -264,9 +161,6 @@ if  (isCPU) {
       delete g;
     }
 
-}
-
-if (isGPU) {
   // Run all GPU tests
   for (int task=0;task<100;task++)
     {
@@ -284,57 +178,57 @@ if (isGPU) {
 	{
 	case 0:
 	  title.assign("Host to device copy");
-	  g = new CopyGPUTask(CopyGPUTask::HOST_TO_DEVICE_COPY,log,specifiedDevice /*, forcePlatform, forceDevice, specifiedPlatform, specifiedDevice */);
+	  g = new CopyGPUTask(CopyGPUTask::HOST_TO_DEVICE_COPY,log);
 	  minWorkgroupSize = maxWorkgroupSize;
 	  break;
 	case 1:
 	  title.assign("Device to host copy");
-	  g = new CopyGPUTask(CopyGPUTask::DEVICE_TO_HOST_COPY,log,specifiedDevice /*, forcePlatform, forceDevice, specifiedPlatform, specifiedDevice */);
+	  g = new CopyGPUTask(CopyGPUTask::DEVICE_TO_HOST_COPY,log);
 	  minWorkgroupSize = maxWorkgroupSize;
 	  break;
 	case 2:
 	  title.assign("copyN");
-	  g = new CopyGPUTask(CopyGPUTask::DEVICE_TO_DEVICE_COPY,log,specifiedDevice /*, forcePlatform, forceDevice, specifiedPlatform, specifiedDevice*/);
+	  g = new CopyGPUTask(CopyGPUTask::DEVICE_TO_DEVICE_COPY,log);
 	  minWorkgroupSize = maxWorkgroupSize;
 	  break;
 	case 3:
 	  title.assign("zeroN 32-bit");
-	  g = new ZeroGPUTask(32,log,specifiedDevice /*, forcePlatform, forceDevice, specifiedPlatform, specifiedDevice */);
+	  g = new ZeroGPUTask(32,log);
 	  break;
 	case 4:
 	  title.assign("zeroN 64-bit");
-	  g = new ZeroGPUTask(64,log,specifiedDevice /*, forcePlatform, forceDevice, specifiedPlatform, specifiedDevice */);
+	  g = new ZeroGPUTask(64,log);
 	  break;
 
 	case 10:
 	  title.assign("AddN v1 16-bit");
-	  g = new AddNGPUTask(ADDN_V1,16,log,specifiedDevice /*, forcePlatform, forceDevice, specifiedPlatform, specifiedDevice*/);
+	  g = new AddNGPUTask(ADDN_V1,16,log);
 	  break;
 	case 11:
 	  title.assign("AddN v1 32-bit");
-	  g = new AddNGPUTask(ADDN_V1,32,log,specifiedDevice /*, forcePlatform, forceDevice, specifiedPlatform, specifiedDevice*/);
+	  g = new AddNGPUTask(ADDN_V1,32,log);
 	  break;
 	case 12:
 	  title.assign("AddN v1 64-bit");
-	  g = new AddNGPUTask(ADDN_V1,64,log,specifiedDevice /* ,forcePlatform, forceDevice, specifiedPlatform, specifiedDevice */);
+	  g = new AddNGPUTask(ADDN_V1,64,log);
 	  break;
 
 	case 20:
 	  title.assign("AddN v2 16-bit");
-	  g = new AddNGPUTask(ADDN_V2,16,log,specifiedDevice /* ,forcePlatform, forceDevice, specifiedPlatform, specifiedDevice */);
+	  g = new AddNGPUTask(ADDN_V2,16,log);
 	  break;
 	case 21:
 	  title.assign("AddN v2 32-bit");
-	  g = new AddNGPUTask(ADDN_V2,32,log,specifiedDevice /* ,forcePlatform, forceDevice, specifiedPlatform, specifiedDevice */);
+	  g = new AddNGPUTask(ADDN_V2,32,log);
 	  break;
 	case 22:
 	  title.assign("AddN v2 64-bit");
-	  g = new AddNGPUTask(ADDN_V2,64,log,specifiedDevice /* ,forcePlatform, forceDevice, specifiedPlatform, specifiedDevice */);
+	  g = new AddNGPUTask(ADDN_V2,64,log);
 	  break;
 
 	case 40:
 	  title.assign("Mul1 v1 32-bit");
-	  g = new Mul1GPUTask(MUL1_V1,1,log,specifiedDevice /* ,forcePlatform, forceDevice, specifiedPlatform, specifiedDevice */);
+	  g = new Mul1GPUTask(MUL1_V1,1,log);
 	  break;
 
 	}
@@ -368,7 +262,6 @@ if (isGPU) {
       allTests.push_back(tr);
       delete g;
     }
-}
 
   // Dump all results
   int nt = (int)allTests.size();

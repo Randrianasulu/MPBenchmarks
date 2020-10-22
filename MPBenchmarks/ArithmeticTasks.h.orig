@@ -29,7 +29,7 @@ class AddNGPUTask : public GPUTask
 
 public:
 
-  AddNGPUTask(int variant,int wordSize,Logger * log, int d /*, bool force_platform, bool force_device, int platform, int device */) : GPUTask("gpu_add.cl",log , d/*, false, false, 0, 0*/)
+  AddNGPUTask(int variant,int wordSize,Logger * log) : GPUTask("gpu_add.cl",log)
   {
     mWS = wordSize;
     mVariant = variant;
@@ -58,7 +58,7 @@ class Mul1GPUTask : public GPUTask
 
 public:
 
-  Mul1GPUTask(int variant,int blockSize,Logger * log, int d /*, bool force_platform, bool force_device, int platform, int device*/) : GPUTask("gpu_mul1.cl",log, d /*, false, false, 0, 0*/)
+  Mul1GPUTask(int variant,int blockSize,Logger * log) : GPUTask("gpu_mul1.cl",log)
   {
     mBS = blockSize;
     mVariant = variant;

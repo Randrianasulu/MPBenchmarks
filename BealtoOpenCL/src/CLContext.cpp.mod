@@ -18,8 +18,9 @@
 #define _stat stat
 #endif
 
-using namespace cl;
 
+
+using namespace cl;
 
 Context::Context() : mX(0)
 {
@@ -46,12 +47,8 @@ Context::~Context()
   clReleaseContext(mX);
 }
 
-Context * Context::create(cl_device_type deviceType)
+Context * Context::create(cl_device_type deviceType, bool force_platform, bool force_device, int platform, int device)
 {
-
-/* No need to pass specific device to this function, it will return full array of them */
-
-
   cl_platform_id bestPlatform = 0;
   std::vector<cl_device_id> devices;
   int status;
@@ -67,13 +64,14 @@ Context * Context::create(cl_device_type deviceType)
   REPORT_OPENCL_STATUS(status);
   if (status != CL_SUCCESS) return 0; // Failed
 
-   printf("NPlatforms: %u\n",nPlatforms);
+  printf("NPlatforms: %u\n",nPlatforms);
 
   // Devices for each platform
   for (unsigned int i=0;i<nPlatforms;i++)
   {
     cl_platform_id p = pIDs[i];
 
+    
     // Get all GPU devices for this platform
     cl_uint nDevices = 0;
     status = clGetDeviceIDs(p,deviceType,0,0,&nDevices);
@@ -86,6 +84,7 @@ Context * Context::create(cl_device_type deviceType)
     if (status != CL_SUCCESS) { devices.clear(); continue; }
 
     bestPlatform = p;
+
     break; // OK
   }
   if (devices.empty())
@@ -230,15 +229,6 @@ bool Context::getAllDeviceInfo(int d,std::string & info)
 
   if (!getDeviceInfo(d,CL_DEVICE_VENDOR_ID,ui)) return false;
   o << "- vendor id: " << ui << "\n";
-  char name[1000];
-  if (!getDeviceInfo(d,CL_DEVICE_NAME,name)) return false;
-  o << "- device name: " << name << "\n";
-   char drvver[1000];
-  if (!getDeviceInfo(d,CL_DRIVER_VERSION,drvver)) return false;
-  o << "- driver version: " << drvver << "\n";
-  char devver[100];
-  if (!getDeviceInfo(d,CL_DEVICE_VERSION,devver)) return false;
-  o << "- device version: " << devver << "\n";
   if (!getDeviceInfo(d,CL_DEVICE_MAX_COMPUTE_UNITS,ui)) return false;
   o << "- max compute units: " << ui << "\n";
   if (!getDeviceInfo(d,CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS,ui)) return false;

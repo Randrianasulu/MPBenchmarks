@@ -29,8 +29,8 @@ public:
   virtual ~Context();
 
   // Create default context (including all devices with the given type).
-  // Return a new instance if OK, and 0 otherwise.
-  static Context * create(cl_device_type deviceType = CL_DEVICE_TYPE_GPU);
+  // Return a new instance if OK, and 0 otherwise. // force_platform, force_device, platform, device
+  static Context * create(cl_device_type deviceType = CL_DEVICE_TYPE_GPU, bool force_platform = false, bool force_device = false, int platform = 0, int device = 0);
 
   // Get number of associated devices
   int getNDevices() const;
@@ -141,8 +141,6 @@ private:
 
   // Devices associated with this context
   std::vector<cl_device_id> mDevices;
-  
-  
 
 }; // class Context
 

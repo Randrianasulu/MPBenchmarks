@@ -13,8 +13,7 @@ public:
   // Create a new context, with a command queue, and the given program.
   // PROGRAMFILE may be 0 if no program is needed.
   // Check if the class is valid after construction with isValid().
-  // force_platform , force_device, platform, device
-  GPUTask(const char * programFile,Logger * log, int d  /*, bool, bool, int, int */);
+  GPUTask(const char * programFile,Logger * log);
 
   // Destructor. Release CL objects
   virtual ~GPUTask();

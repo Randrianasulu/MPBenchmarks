@@ -3,7 +3,7 @@
 
 #include "GPUTask.h"
 
-GPUTask::GPUTask(const char * programFile,Logger * log, int d /*,  bool force_platform, bool force_device, int platform, int device*/)
+GPUTask::GPUTask(const char * programFile,Logger * log)
 {
   cl::Context * c = 0;
   cl::CommandQueue * q = 0;
@@ -11,13 +11,11 @@ GPUTask::GPUTask(const char * programFile,Logger * log, int d /*,  bool force_pl
   bool ok = true;
   std::string s;
   std::vector<unsigned char> binary;
-  
-  //d = 1;
 
   if (log == 0) { ok = false; goto END; }
-  c = cl::Context::create(/* force_platform, force_device, platform, device */);
+  c = cl::Context::create();
   if (c == 0) { log->append("Context creation failed"); ok = false; goto END; }
-  q = c->createCommandQueue(d,0);
+  q = c->createCommandQueue(0,0);
   if (q == 0) { log->append("Command queue creation failed"); ok = false; goto END; }
   if (programFile == 0) p = 0;
   else

@@ -21,7 +21,7 @@ public:
     DEVICE_TO_DEVICE_COPY
   };
 
-  CopyGPUTask(int copyType,Logger * log , int d/*, bool force_platform, bool force_device, int platform, int device*/) : GPUTask(0,log, d /*, false, false, 0, 0 */)
+  CopyGPUTask(int copyType,Logger * log) : GPUTask(0,log)
   {
     mCT = copyType;
   }
@@ -45,7 +45,7 @@ class ZeroGPUTask : public GPUTask
 
 public:
 
-  ZeroGPUTask(int wordSize,Logger * log, int d /*, bool force_platform, bool force_device, int platform, int device*/) : GPUTask("gpu_zero.cl",log, d  /*, false, false, 0, 0*/)
+  ZeroGPUTask(int wordSize,Logger * log) : GPUTask("gpu_zero.cl",log)
   {
     mWS = wordSize;
     char options[200];
