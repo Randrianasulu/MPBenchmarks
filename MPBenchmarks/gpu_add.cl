@@ -4,23 +4,23 @@
 #if (WORD_SIZE == 64)
 
 typedef long Word;
-const Word LOG_BASE = 62;
-const Word BASE = (Word)1<<(Word)62;
-const Word BASE_MINUS1 = (Word)1<<(Word)62 - 1;
+__constant Word LOG_BASE = 62;
+__constant Word BASE = (Word)1<<(Word)62;
+__constant Word BASE_MINUS1 = (Word)1<<(Word)62 - 1;
 
 #elif (WORD_SIZE == 32)
 
 typedef int Word;
-const Word LOG_BASE = 30;
-const Word BASE = (Word)1<<(Word)30;
-const Word BASE_MINUS1 = (Word)1<<(Word)30 - 1;
+__constant Word LOG_BASE = 30;
+__constant Word BASE = (Word)1<<(Word)30;
+__constant Word BASE_MINUS1 = (Word)1<<(Word)30 - 1;
 
 #elif (WORD_SIZE == 16)
 
 typedef short Word;
-const Word LOG_BASE = 14;
-const Word BASE = (Word)1<<(Word)14;
-const Word BASE_MINUS1 = (Word)1<<(Word)14 - 1;
+__constant Word LOG_BASE = 14;
+__constant Word BASE = (Word)1<<(Word)14;
+__constant Word BASE_MINUS1 = (Word)1<<(Word)14 - 1;
 
 #endif
 
