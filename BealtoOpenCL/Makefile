@@ -28,7 +28,7 @@ VPATH = src
 OPENCL_DIR = /opt/ati-stream-sdk-v2.0-beta4-lnx64
 
 # flags
-CXXFLAGS = -DLinux -DCONFIG_USE_QT=0 -O2 -mtune=nocona -msse3 -Wall -I./include -I$(OPENCL_DIR)/include
+CXXFLAGS = -DLinux -DCONFIG_USE_QT=0 -O2  -Wall -I./include -I$(OPENCL_DIR)/include
 LDFLAGS = -L$(OPENCL_DIR)/lib/x86_64
 
 lib: $(LIB)
