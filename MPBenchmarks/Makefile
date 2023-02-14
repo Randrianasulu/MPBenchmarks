@@ -27,7 +27,7 @@ BEALTO_OPENCL_DIR = ../BealtoOpenCL
 BEALTO_OPENCL_LIB = $(BEALTO_OPENCL_DIR)/$(LIBDIR)/libBealtoOpenCL.a
 
 # flags
-CXXFLAGS = -DLinux -DCONFIG_USE_QT=0 -O2 -mtune=nocona -msse3 -Wall -I/usr/include/qt4 -I$(OPENCL_DIR)/include -I$(BEALTO_OPENCL_DIR)/include
+CXXFLAGS = -DLinux -DCONFIG_USE_QT=0 -O2 -Wall -I/usr/include/qt4 -I$(OPENCL_DIR)/include -I$(BEALTO_OPENCL_DIR)/include
 LDFLAGS = -L/usr/lib/qt4 -L$(OPENCL_DIR)/lib/x86_64
 
 all: tocl
